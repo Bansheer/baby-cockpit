@@ -16,6 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
 <div class="app">
@@ -42,12 +43,13 @@
           </div>
           <div class="ring" id="ring" aria-hidden="true"></div>
         </div>
-        <div class="size" id="babySize"></div>
+        <button type="button" class="size" id="babySize" aria-label="Diese Woche im Detail"></button>
         <div class="hc-band" id="hcBand" aria-label="Zeitband: Schwangerschaftswochen 26 bis 42">
           <div class="band-inner"><svg id="bandSvg" viewBox="0 0 400 74" role="img"></svg></div>
         </div>
       </div>
       <div class="birth-bar" id="birthBar"></div>
+      <section class="tip-card" id="dailyTip" aria-labelledby="tipTitle"></section>
       <div class="stats" id="kpis"></div>
       <h2>Jetzt dran<span class="count" id="soonCount"></span></h2>
       <div class="list" id="soonList"></div>
@@ -129,8 +131,13 @@
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
 <div id="labor" class="labor" role="dialog" aria-modal="true" aria-labelledby="laborTitle" hidden></div>
+<div id="weekView" class="labor" role="dialog" aria-modal="true" aria-labelledby="weekTitle" hidden></div>
+<div id="breathView" class="labor breath" role="dialog" aria-modal="true" aria-labelledby="breathTitle" hidden></div>
+<script src="content.js"></script>
 <script src="app.js"></script>
 <script src="birth.js"></script>
+<script src="week.js"></script>
+<script src="breath.js"></script>
 <script src="db.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
    Änderungen werden sofort lokal angewendet und über eine Warteschlange übertragen,
    damit die App auch offline (Kreißsaal, Funkloch) weiter funktioniert. */
 
-const APP_VERSION = "1.2.0";
+const APP_VERSION = "1.3.0";
 const CFG = window.COCKPIT_CONFIG || {};
 const CONFIGURED = !!(CFG.url && CFG.key && !CFG.url.includes("DEIN-PROJEKT"));
 
@@ -137,7 +137,7 @@ function status(){
 async function setMe(name){
   me = name; LS.set(K.me, name);
   try{ await sb?.auth.updateUser({data:{name}}); }catch(e){}
-  renderSettings();
+  renderSettings(); if(window.renderDailyTip) renderDailyTip();
 }
 function askWho(){
   openSheet(`<h3 id="sheetTitle">Wer bist du?</h3><p>Damit ihr bei jeder Änderung seht, wer sie gemacht hat.</p>

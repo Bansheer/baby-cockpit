@@ -27,10 +27,12 @@ function laborStats(){
   const avg = a => a.length ? a.reduce((s,x) => s+x, 0) / a.length : 0;
   const durs = list => list.map(w => (new Date(w.end) - new Date(w.start)) / 1000);
   const gaps = list => list.slice(1).map((w,i) => (new Date(w.start) - new Date(list[i].start)) / 1000);
-  const h = win(65), half = win(30);
+  const h = win(65), half = win(30), ten = done.filter(w => now - new Date(w.start) <= 10*60e3);
   const st = { count60: h.length, avgDur: avg(durs(h)), avgGap: avg(gaps(h)), level: "start" };
   const span = h.length > 1 ? (new Date(h[h.length-1].start) - new Date(h[0].start)) / 60e3 : 0;
-  if(h.length >= 6 && span >= 50 && st.avgGap <= 330 && st.avgDur >= 55) st.level = "go";
+  const r = all.find(w => !w.end);
+  if(ten.length >= 6 || durs(done.slice(-1)).some(d => d > 120) || (r && now - new Date(r.start) > 120e3)) st.level = "urgent";
+  else if(h.length >= 6 && span >= 50 && st.avgGap <= 330 && st.avgDur >= 55) st.level = "go";
   else if(half.length >= 3 && avg(gaps(half)) <= 420) st.level = "ready";
   else if(all.length) st.level = "early";
   st.blase = state.wehen.find(w => w.type === "blase");
@@ -40,18 +42,19 @@ const ADVICE = {
   start: ["", "Tippe beim Beginn und am Ende jeder Wehe. Der Timer rechnet Dauer und Abstand aus."],
   early: ["", "Noch Zeit: ausruhen, trinken, warm duschen. Weiter mitzählen."],
   ready: ["ready", "Die Wehen werden regelmäßig. Tasche ins Auto, Babyschale prüfen, Kreißsaal vorab anrufen."],
-  go:    ["go", "5-1-1 erreicht: Wehen alle ~5 Min., je ~1 Min., seit 1 Stunde. Jetzt Kreißsaal anrufen und losfahren."]
+  go:    ["go", "Wehen regelmäßig alle ~5 Minuten seit einer Stunde: Jetzt Kreißsaal anrufen und losfahren. (NHS: anrufen bei regelmäßigen Wehen alle 5 Min. oder öfter)"],
+  urgent:["go", "Dringend: 6 oder mehr Wehen in 10 Minuten oder eine Wehe länger als 2 Minuten – sofort Kreißsaal anrufen."]
 };
 
 /* ---------- Leiste auf der Startseite ---------- */
 function renderBirthBar(){
   const el = document.getElementById("birthBar"); if(!el) return;
   if(state.baby.born){
-    el.innerHTML = `<button class="bb-btn" id="bbCard"><span aria-hidden="true">💌</span>Geburtskarte teilen</button><button class="bb-btn" id="bbEdit"><span aria-hidden="true">✏️</span>Geburtsdaten</button>`;
+    el.innerHTML = `<button class="bb-btn" id="bbCard"><span aria-hidden="true">💌</span>Geburtskarte teilen</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbEdit"><span aria-hidden="true">✏️</span>Geburtsdaten</button>`;
     return;
   }
   const r = running(), n = contractions().length;
-  el.innerHTML = `<button class="bb-btn ${r?"live":""}" id="bbLabor"><span aria-hidden="true">⏱</span>${r ? "Wehe läuft …" : "Wehen-Timer"}${n && !r ? `<small>${n}</small>` : ""}</button><button class="bb-btn" id="bbBorn"><span aria-hidden="true">👶</span>Baby ist da</button>`;
+  el.innerHTML = `<button class="bb-btn ${r?"live":""}" id="bbLabor"><span aria-hidden="true">⏱</span>${r ? "Wehe läuft …" : "Wehen-Timer"}${n && !r ? `<small>${n}</small>` : ""}</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbBorn"><span aria-hidden="true">👶</span>Baby ist da</button>`;
 }
 
 /* ---------- Wehen-Timer (Vollbild) ---------- */
@@ -68,7 +71,7 @@ function renderLabor(){
   el.innerHTML = `
     <div class="lb-head"><h2 id="laborTitle">Wehen-Timer</h2><button class="icon-btn" id="laborClose" aria-label="Schließen">✕</button></div>
     <div class="lb-advice ${cls}" role="status">${esc(txt)}</div>
-    ${st.blase ? `<div class="lb-advice go">Blasensprung um ${hhmm(st.blase.at)}: Kreißsaal anrufen und ins Krankenhaus fahren, auch ohne Wehen.</div>` : ""}
+    ${st.blase ? `<div class="lb-advice go">Blasensprung um ${hhmm(st.blase.at)}: Kreißsaal anrufen – Farbe und Menge merken.</div>` : ""}
     <button class="lb-big ${r?"on":""}" id="laborToggle" aria-live="polite">
       <span class="lb-big-t">${r ? "Wehe vorbei" : "Wehe beginnt"}</span>
       ${r ? `<span class="lb-big-s" id="laborClock">${mmss((Date.now() - new Date(r.start)) / 1000)}</span>` : `<span class="lb-big-h">beim Beginn tippen</span>`}
@@ -84,8 +87,9 @@ function renderLabor(){
       ${Object.entries(CLINICS).map(([k,c]) => `<a class="btn sec" href="${c.map}" target="_blank" rel="noopener">🚗 Route ${c.name.replace("KH ","")}</a>`).join("")}
       <button class="btn sec" id="laborShare">💬 Familie informieren</button>
       <button class="btn sec" id="laborBlase">💧 Blasensprung</button>
+      <button class="btn sec" data-breath="wehe">🌊 Atemhilfe für die Wehe</button>
     </div>
-    <p class="lb-foot">Sofort anrufen bei Blasensprung, Blutung, deutlich weniger Kindsbewegungen, Fieber oder starken Dauerschmerzen. Die 5-1-1-Regel ist eine Faustregel fürs erste Kind. Im Zweifel immer anrufen.</p>
+    <p class="lb-foot">Sofort anrufen bei Blasensprung (besonders grünes, braunes oder blutiges Fruchtwasser), Blutung oder weniger Kindsbewegungen. Im Zweifel immer anrufen. Quellen: <a href="https://www.nhs.uk/pregnancy/labour-and-birth/signs-that-labour-has-begun/" target="_blank" rel="noopener">NHS – Signs that labour has begun</a>, <a href="https://www.nhs.uk/pregnancy/keeping-well/your-babys-movements/" target="_blank" rel="noopener">NHS – Baby movements</a>.</p>
     <div class="set-row"><button class="btn danger" id="laborReset">Fehlalarm: Liste leeren</button></div>`;
 }
 async function openLabor(){

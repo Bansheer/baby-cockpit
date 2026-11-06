@@ -5,7 +5,7 @@
    Änderungen werden sofort lokal angewendet und über eine Warteschlange übertragen,
    damit die App auch offline (Kreißsaal, Funkloch) weiter funktioniert. */
 
-const APP_VERSION = "1.5.0";
+const APP_VERSION = "1.6.0";
 const CFG = window.COCKPIT_CONFIG || {};
 const CONFIGURED = !!(CFG.url && CFG.key && !CFG.url.includes("DEIN-PROJEKT"));
 
@@ -189,6 +189,10 @@ function renderSettings(){
     <div class="seg" role="group" aria-label="Ich bin">${["Lena","Hannes"].map(n => `<button data-me="${n}" aria-pressed="${me===n}">${n}</button>`).join("")}</div>
     <h4>Design</h4>
     <div class="seg" role="group" aria-label="Design">${[["light","Hell"],["dark","Dunkel"],["system","Wie iPhone"]].map(([k,n]) => `<button data-theme-set="${k}" aria-pressed="${(window.themePref ? themePref() : "system") === k}">${n}</button>`).join("")}</div>
+    <h4>Mitteilungen</h4>
+    <div id="pushBox"></div>
+    <h4>Widget für Start- und Sperrbildschirm</h4>
+    <div id="widgetBox"></div>
     <h4>Kalender aufs iPhone</h4>
     ${cal ? `<p>Alle Aufgaben mit Datum erscheinen automatisch in eurem Apple-Kalender und aktualisieren sich von selbst.</p>
       <div class="set-row"><a class="btn" href="webcal://${esc(cal)}">Kalender abonnieren</a><button class="btn sec" id="copyCal">Link kopieren</button></div>`
@@ -200,6 +204,7 @@ function renderSettings(){
     <h4>Status</h4>
     <p>${sync.online ? "Online" : "Offline"} · ${outbox.length} ausstehende Änderungen · letzter Abgleich ${sync.last ? esc(stamp(sync.last)) : "–"}<br>Version ${APP_VERSION}</p>
     <div class="set-row"><button class="btn sec" id="syncNow">Jetzt abgleichen</button><button class="btn sec" id="checkUpdate">Nach Update suchen</button><button class="btn danger" id="logout">Abmelden</button></div>`;
+  if(window.renderPush) renderPush(); if(window.renderWidget) renderWidget();
 }
 document.getElementById("appBody")?.addEventListener("click", async e => {
   const id = e.target.id;
@@ -246,16 +251,21 @@ async function startApp(session){
   db = makeDb();
   const sub = (col, key) => db.collection(col).onSnapshot(s => { state[key] = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); });
   sub("tasks","tasks"); sub("talk","talk"); sub("questions","questions"); sub("log","log"); sub("shopExtra","shopExtra"); sub("wehen","wehen");
+  db.collection("push").onSnapshot(s => { state.push = s.docs.map(d => ({id:d.id, ...d.data()})); if(window.renderPush) renderPush(); });
+  db.collection("dokumente").onSnapshot(s => { state.dokumente = s.docs.map(d => ({id:d.id, ...d.data()})); if(window.renderDocs) renderDocs(); });
+  db.doc("content/push").onSnapshot(s => { state.pushKey = s.exists ? s.data().vapidPublic : ""; });
   db.doc("state/baby").onSnapshot(s => { state.baby = s.exists ? clean(s.data()) : {}; renderAll(); });
   db.doc("state/shop").onSnapshot(s => { state.shop = s.exists ? clean(s.data()) : {}; renderShop(); renderHome(); });
   db.doc("state/checks").onSnapshot(s => { state.checks = s.exists ? clean(s.data()) : {}; renderWissen(); });
   db.doc("content/wissen").onSnapshot(s => { WISSEN = s.exists ? (s.data().items || []) : []; renderWissen(); });
   db.doc("content/calendar").onSnapshot(() => renderSettings());
+  if(window.pushInit) pushInit();
   const metaName = session?.user?.user_metadata?.name;
   if(metaName && !me){ me = metaName; LS.set(K.me, me); }
   renderSettings(); status();
   await flush(); await refresh();
   if(!me) askWho();
+  if(window.openFromHash) openFromHash();
   // Live-Updates; iPhone pausiert Verbindungen im Hintergrund → beim Zurückkommen nachladen
   let t = null;
   sb.channel("docs").on("postgres_changes", {event:"*", schema:"public", table:"docs"}, () => { clearTimeout(t); t = setTimeout(refresh, 300); }).subscribe();

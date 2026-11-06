@@ -1,0 +1,21 @@
+{
+ "name": "Baby-Cockpit",
+ "short_name": "Baby-Cockpit",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#F8F0F3",
+ "theme_color": "#F8F0F3",
+ "icons": [
+  {
+   "src": "icon-180.png",
+   "sizes": "180x180",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  }
+ ]
+}

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Baby-Cockpit">
+<meta name="theme-color" content="#F8F0F3">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Baby-Cockpit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="nav" aria-label="Bereiche">
+    <div class="brand">Baby-Cockpit<span>Lena &amp; Hannes</span></div>
+    <button data-view="heute" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-5v-5h-4v5H5a1 1 0 0 1-1-1z"/></svg>Heute</button>
+    <button data-view="aufgaben"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg>Aufgaben</button>
+    <button data-view="einkauf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h14l-1.5 11a2 2 0 0 1-2 1.7h-7a2 2 0 0 1-2-1.7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>Einkauf</button>
+    <button data-view="besprechen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v10H9l-5 4z"/></svg>Besprechen<span class="badge hidden" id="talkBadge"></span></button>
+    <button data-view="wissen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 1-4-4z"/><path d="M5 16a4 4 0 0 1 4-4h10"/></svg>Wissen</button>
+    <button data-view="log" id="navLog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>Log</button>
+    <button class="fab" id="addBtn" aria-label="Neue Aufgabe"><span aria-hidden="true">+</span><span class="t">Neue Aufgabe</span></button>
+  </nav>
+
+  <main class="main" id="main">
+    <!-- HEUTE -->
+    <section data-panel="heute">
+      <div class="hero-card">
+        <div class="hc-top">
+          <div class="hc-left">
+            <div class="hc-label">Schwangerschaftswoche</div>
+            <div class="ssw" id="ssw">–</div>
+            <div class="sub" id="sswSub">Geburtstermin 10.01.2027</div>
+          </div>
+          <div class="ring" id="ring" aria-hidden="true"></div>
+        </div>
+        <div class="size" id="babySize"></div>
+        <div class="hc-band" aria-label="Zeitband: Schwangerschaftswochen 26 bis 42">
+          <div class="band-inner"><svg id="bandSvg" viewBox="0 0 400 74" role="img"></svg></div>
+        </div>
+      </div>
+      <div class="stats" id="kpis"></div>
+      <h2>Jetzt dran<span class="count" id="soonCount"></span></h2>
+      <div class="list" id="soonList"></div>
+      <button class="btn ghost" data-goto="aufgaben">Alle Aufgaben anzeigen</button>
+    </section>
+
+    <!-- AUFGABEN -->
+    <section data-panel="aufgaben" class="hidden">
+      <div class="view-title">Aufgaben &amp; Fristen</div>
+      <div class="chips" id="whoChips" role="group" aria-label="Wer">
+        <button class="chip" aria-pressed="true" data-who="Alle">Alle</button>
+        <button class="chip" aria-pressed="false" data-who="Lena">Lena</button>
+        <button class="chip" aria-pressed="false" data-who="Hannes">Hannes</button>
+        <button class="chip" aria-pressed="false" data-who="Beide">Beide</button>
+      </div>
+      <div class="chips"><button class="chip" aria-pressed="false" id="showDone">Erledigte einblenden</button></div>
+      <div id="taskGroups"></div>
+    </section>
+
+    <!-- EINKAUF -->
+    <section data-panel="einkauf" class="hidden">
+      <div class="list-head">
+        <div class="lh-row"><div class="view-title">Einkauf &amp; Herrichten</div><button class="icon-btn" id="addShop" aria-label="Eigener Eintrag">+</button></div>
+        <div class="lh-progress"><div class="bar"><span id="shopBar"></span></div><div class="lh-stats"><span id="shopSum">–</span><span id="shopMust"></span></div></div>
+        <div class="lh-filters">
+          <div class="segctl" id="prioChips" role="group" aria-label="Priorität">
+            <button aria-pressed="true" data-p="A">Alle</button><button aria-pressed="false" data-p="M">Muss</button><button aria-pressed="false" data-p="S">Sinnvoll</button><button aria-pressed="false" data-p="O">Optional</button>
+          </div>
+          <label class="switch"><input type="checkbox" id="showDoneShop"><span>Erledigte zeigen</span></label>
+        </div>
+      </div>
+      <div id="shopList"></div>
+      <p class="note">Tippen auf den Kreis: offen → erledigt → nicht nötig. Rosa Punkt = Muss, hell = sinnvoll, leer = optional.</p>
+    </section>
+
+    <!-- BESPRECHEN -->
+    <section data-panel="besprechen" class="hidden">
+      <div class="view-title">Zu besprechen</div>
+      <div id="talkList"></div>
+    </section>
+
+    <!-- WISSEN -->
+    <section data-panel="wissen" class="hidden">
+      <div class="view-title">Wissen &amp; Checklisten</div>
+      <div id="wissen"></div>
+    </section>
+
+    <!-- LOG -->
+    <section data-panel="log" class="hidden">
+      <div class="view-title">Log</div>
+      <details class="acc" open><summary><span>Fragebogen an Lena</span><span class="meta" id="qMeta"></span></summary><div class="acc-body" id="qList"></div></details>
+      <details class="acc"><summary><span>Entscheidungen</span><span class="meta" id="logMeta"></span></summary><div class="acc-body" id="logList"></div></details>
+      <details class="acc"><summary><span>Erledigt</span><span class="meta" id="doneMeta"></span></summary><div class="acc-body" id="doneList"></div></details>
+      <details class="acc" id="appAcc"><summary><span>App, Kalender &amp; Backup</span><span class="meta" id="appMeta"></span></summary><div class="acc-body" id="appBody"></div></details>
+    </section>
+
+    <p class="note" id="syncNote">Daten werden geladen …</p>
+  </main>
+
+  <aside class="rail" aria-label="Seitenleiste">
+    <h2 id="railTitle">Nächste Termine</h2>
+    <div id="railList"></div>
+  </aside>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="grab"></div>
+  <button class="close" id="sheetClose" aria-label="Schließen">×</button>
+  <div id="sheetBody"></div>
+</div>
+
+<div id="login" role="dialog" aria-modal="true" aria-labelledby="loginTitle"><form id="loginForm">
+  <h1 id="loginTitle">Baby-Cockpit</h1><p>Einmal anmelden, danach bleibst du eingeloggt.</p>
+  <input type="email" id="loginMail" autocomplete="username" placeholder="E-Mail" required>
+  <input type="password" id="loginPw" autocomplete="current-password" placeholder="Passwort" required>
+  <button type="submit">Anmelden</button><p id="loginErr" aria-live="polite"></p>
+</form></div>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+<script src="app.js"></script>
+<script src="db.js"></script>
+</body>
+</html>

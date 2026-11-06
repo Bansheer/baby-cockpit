@@ -94,7 +94,7 @@ function renderHero(){
   const gd = Math.round((today() - LMP)/864e5);
   const w = Math.floor(gd/7), d = gd%7;
   document.getElementById("ssw").textContent = `${w}+${d}`;
-  document.getElementById("sswSub").textContent = "Termin 10.01.2027";
+  document.getElementById("sswSub").textContent = `noch ${Math.max(days,0)} Tage · Termin 10.01.`;
   const pct = Math.min(Math.max(gd/280,0),1), R = 36, C = 2*Math.PI*R;
   document.getElementById("ring").innerHTML = `<svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="${R}" fill="none" stroke="var(--accent-soft)" stroke-width="7"/><circle cx="42" cy="42" r="${R}" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C*pct).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 42 42)"/></svg><div class="rv">${Math.max(days,0)}<small>Tage</small></div>`;
   const sz = SIZES[Math.min(Math.max(w,28),40)], wk = (typeof WEEKS !== "undefined" ? WEEKS : {})[Math.min(Math.max(w,28),42)];
@@ -282,7 +282,7 @@ async function write(path, data, merge){
 }
 function note(t){ document.getElementById("syncNote").textContent = t; }
 
-function renderAll(){ renderHero(); renderHome(); renderTasks(); renderTalk(); renderWissen(); renderLog(); renderShop(); if(window.renderSettings) renderSettings(); if(window.renderBirth) renderBirth(); if(window.renderDailyTip) renderDailyTip(); }
+function renderAll(){ renderHero(); renderHome(); renderTasks(); renderTalk(); renderWissen(); renderLog(); renderShop(); if(window.renderSettings) renderSettings(); if(window.renderBirth) renderBirth(); if(window.renderDailyTip) renderDailyTip(); if(window.renderUI) renderUI(); }
 document.getElementById("addBtn").addEventListener("click", () => state.view === "einkauf" ? document.getElementById("addShop").click() : openSheet(`<h3 id="sheetTitle">Neue Aufgabe</h3>
   <div class="field"><label for="newTitle">Was ist zu tun?</label><input type="text" id="newTitle" placeholder="z. B. Babyschale abholen"></div>
   <div class="field"><label for="newDate">Bis wann?</label><input type="date" id="newDate"></div>

@@ -234,8 +234,8 @@ const FRUITS = {
 };
 
 /* ---------- Szene, Licht, Drehen ---------- */
-export function mountFruit(el, model){
-  const canvas = document.createElement("canvas"); el.innerHTML = ""; el.appendChild(canvas);
+export function mountFruit(el, model, opt = {}){
+  const canvas = document.createElement("canvas"); el.querySelector("canvas")?.remove(); el.appendChild(canvas);
   let renderer;
   try{ renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true, preserveDrawingBuffer:true}); }
   catch(e){ return null; }
@@ -253,7 +253,7 @@ export function mountFruit(el, model){
   // auf einheitliche Größe bringen und zentrieren
   const box = new THREE.Box3().setFromObject(fruit), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
   const k = 2.3 / Math.max(size.x, size.y, size.z);
-  const holder = new THREE.Group(); fruit.position.sub(c); holder.add(fruit); holder.scale.setScalar(k); scene.add(holder);
+  const holder = new THREE.Group(); fruit.position.sub(c); holder.add(fruit); holder.scale.setScalar(opt.intro ? k * .2 : k); scene.add(holder);
   // weicher Kontaktschatten
   const sh = new THREE.Mesh(new THREE.CircleGeometry(1.25, 48), new THREE.MeshBasicMaterial({transparent:true, depthWrite:false,
     map:tex(256, 256, (g, w, h) => { const gr = g.createRadialGradient(w/2, h/2, 0, w/2, h/2, w/2); gr.addColorStop(0, "rgba(90,30,60,.35)"); gr.addColorStop(1, "rgba(90,30,60,0)"); g.fillStyle = gr; g.fillRect(0, 0, w, h); })}));
@@ -272,11 +272,31 @@ export function mountFruit(el, model){
   resize(); const ro = new ResizeObserver(resize); ro.observe(el);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let raf = 0;
+  let introT = opt.intro && !matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1, last = performance.now(), first = true;
+  const easeBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
   const loop = () => {
+    const now = performance.now(), dt = Math.min((now - last) / 1000, .05); last = now;
+    if(introT < 1){ introT = Math.min(1, introT + dt / .9); holder.scale.setScalar(k * (.2 + .8 * easeBack(introT))); }
     if(!drag){ idle++; vy *= .95; vx *= .9; ry += vy; rx += vx; if(idle > 90 && !reduce) ry += .004; rx += (.12 - rx) * .02; }
-    holder.rotation.set(rx, ry, 0);
+    holder.rotation.set(rx, ry - (1 - Math.pow(introT, .5)) * Math.PI * 1.4, 0);
     renderer.render(scene, cam); raf = requestAnimationFrame(loop);
+    if(first){ first = false; opt.onReady && opt.onReady(); }
   };
   loop();
   return { dispose(){ cancelAnimationFrame(raf); ro.disconnect(); renderer.dispose(); pm.dispose(); scene.traverse(o => { o.geometry?.dispose(); [].concat(o.material || []).forEach(m => { m.map?.dispose(); m.bumpMap?.dispose(); m.dispose(); }); }); } };
+}
+
+/* Standbild als PNG (transparent) – für Vorschaubilder auf der Startseite */
+export function renderStill(model, px = 512){
+  const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true, preserveDrawingBuffer:true});
+  renderer.setSize(px, px); renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+  const scene = new THREE.Scene(), pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture;
+  const key = new THREE.DirectionalLight("#fff4ec", 1.6); key.position.set(3, 4, 4); scene.add(key);
+  const rim = new THREE.DirectionalLight("#ffd6e6", 1.0); rim.position.set(-4, 2, -3); scene.add(rim);
+  scene.add(new THREE.HemisphereLight("#ffffff", "#f2cfdc", .5));
+  seed = 7; const fruit = (FRUITS[model] || FRUITS.kohl)();
+  const box = new THREE.Box3().setFromObject(fruit), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  const holder = new THREE.Group(); fruit.position.sub(c); holder.add(fruit); holder.scale.setScalar(2.6 / Math.max(size.x, size.y, size.z)); holder.rotation.set(.18, .5, -.12); scene.add(holder);
+  const cam = new THREE.PerspectiveCamera(30, 1, .1, 50); cam.position.set(0, .4, 6.2); cam.lookAt(0, 0, 0);
+  renderer.render(scene, cam); const url = renderer.domElement.toDataURL("image/png"); renderer.dispose(); return url;
 }

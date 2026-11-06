@@ -22,7 +22,7 @@ function renderDailyTip(){
       <div class="seg tip-seg" role="group" aria-label="Tipps für">${[["m","Lena"],["v","Hannes"]].map(([k,n]) => `<button data-tiprole="${k}" aria-pressed="${role===k}">${n}</button>`).join("")}</div></div>
     <span class="tip-tag">${esc(t[0])}</span>
     <p class="tip-text">${esc(t[1])}</p>
-    <div class="tip-foot">${t[2] ? `<span>Quelle: ${srcLink(t[2])}</span>` : `<span class="tip-prax">Praxis-Tipp</span>`}<button class="link-btn" data-tipweek="${wk}">Alle Tipps der Woche</button></div>`;
+    <div class="tip-foot">${t[2] ? `<span>Quelle: <a href="${esc(SRC[t[2]][1])}" target="_blank" rel="noopener">${esc(SRC[t[2]][0].split(" – ")[0])}</a></span>` : `<span class="tip-prax">Praxis-Tipp</span>`}<button class="link-btn" data-tipweek="${wk}">Alle Tipps der Woche</button></div>`;
 }
 function tipWeekSheet(wk){
   const role = tipRole || myRole(), day = ((gestDay() % 7) + 7) % 7, cur = Math.floor(gestDay() / 7) === wk;
@@ -61,7 +61,7 @@ function renderWeek(){
       <h2 id="weekTitle">SSW ${wk}${wk === nowWk ? ` <small>· jetzt</small>` : ""}</h2>
       <button class="icon-btn ghost" data-wk="${wk+1}" ${wk>=42?"disabled":""} aria-label="Nächste Woche">›</button>
       <button class="icon-btn" id="weekClose" aria-label="Schließen">✕</button></div>
-    <div class="fruit-stage" id="fruitStage"><div class="fruit-fallback">${(SIZES[Math.min(Math.max(wk,28),40)]||[])[3]||"🍈"}</div></div>
+    <div class="fruit-stage" id="fruitStage"><img class="fruit-img" src="img/w${Math.min(Math.max(wk,28),40)}.png" alt=""><span class="fruit-spark" aria-hidden="true"></span></div>
     <p class="fruit-name">So groß wie ${esc(/^(kleine|Bund)/.test(W.fruit) ? (W.fruit.startsWith("kleine") ? "eine " : "ein ") + W.fruit : artikel(W.fruit))} <span class="drag-hint">· zum Drehen ziehen</span></p>
     <div class="lb-stats wk-stats">
       <div><b>${W.cm ? String(W.cm).replace(".",",") + " cm" : "≈ 51 cm"}</b><span>Größe (Kopf bis Ferse)</span></div>
@@ -82,8 +82,10 @@ async function mount3D(model){
   try{
     const mod = await import("./fruit3d.js");
     if(!document.getElementById("fruitStage") || weekShown === null) return;
-    fruitScene = mod.mountFruit(stage, model);
-    if(fruitScene) stage.classList.add("live");
+    // kurz das Bild zeigen, dann animiert ins drehbare 3D-Modell wechseln
+    await new Promise(r => setTimeout(r, 550));
+    if(!stage.isConnected) return;
+    fruitScene = mod.mountFruit(stage, model, {intro:true, onReady:() => stage.classList.add("live")});
   }catch(e){ console.warn("3D nicht verfügbar", e); }   // Emoji bleibt als Ersatz stehen
 }
 function openWeek(wk){

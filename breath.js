@@ -3,18 +3,32 @@
 
 const bs = { ex:null, phase:0, t0:0, total:0, start:0, raf:0, paused:false, pauseAt:0, sound:false, voice:false, inStart:false, lock:null, actx:null };
 
+
+/* Stimmungsfiguren (eigene Formen, Farben aus dem Design-System) */
+const EYE = 'stroke="#1C1218" stroke-width="3.5" fill="none" stroke-linecap="round"';
+const FACES = {
+  ruhe:`<circle cx="50" cy="52" r="42" fill="var(--c5)"/><path d="M33 48q5 5 10 0M57 48q5 5 10 0M40 63q10 8 20 0" ${EYE}/>`,
+  schlaf:`<path d="M54 8a43 43 0 1 0 30 70A35 35 0 0 1 54 8z" fill="var(--c3)"/><path d="M18 58q4 4 8 0M32 58q4 4 8 0" ${EYE}/>`,
+  seufzen:`<path d="M20 66a19 19 0 0 1 7-36 23 23 0 0 1 44 1 17 17 0 0 1 10 35z" fill="var(--c4)"/><circle cx="41" cy="50" r="7.5" fill="#fff"/><circle cx="61" cy="50" r="7.5" fill="#fff"/><circle cx="43" cy="52" r="3.6" fill="#1C1218"/><circle cx="59" cy="49" r="3.6" fill="#1C1218"/>`,
+  becken:`<g fill="var(--c1)"><circle cx="50" cy="29" r="22"/><circle cx="71" cy="50" r="22"/><circle cx="50" cy="71" r="22"/><circle cx="29" cy="50" r="22"/></g><path d="M38 48q5 5 10 0M54 48q5 5 10 0M43 61q7 6 14 0" ${EYE}/>`,
+  wehe:`<path d="M8 64q14-20 28 0t28 0 28 0v26H8z" fill="var(--c2)"/><circle cx="50" cy="46" r="27" fill="var(--c2)"/><path d="M38 45q5 4 10 0M54 45q5 4 10 0" ${EYE}/><circle cx="50" cy="59" r="4" fill="#1C1218"/>`,
+  zusammen:`<circle cx="36" cy="52" r="26" fill="var(--c1)"/><circle cx="64" cy="52" r="26" fill="var(--c3)" opacity=".95"/><path d="M26 50q4 4 8 0M40 50q4 4 8 0M54 50q4 4 8 0M68 50q4 4 8 0" ${EYE} stroke-width="3"/>`
+};
+const face = id => `<svg class="br-face" viewBox="0 0 100 100" aria-hidden="true">${FACES[id] || FACES.ruhe}</svg>`;
+
 /* ---------- Auswahl ---------- */
 function renderBreathPick(){
   const el = document.getElementById("breathView");
   el.innerHTML = `
     <div class="lb-head"><h2 id="breathTitle">Wie geht es dir gerade?</h2><button class="icon-btn" id="brClose" aria-label="Schließen">✕</button></div>
-    <div class="br-grid">${BREATH.map(b => `<button class="br-card" data-brpick="${b.id}"><span class="br-ico" aria-hidden="true">${b.icon}</span><b>${esc(b.title)}</b><small>${esc(b.sub)}</small></button>`).join("")}</div>
+    <div class="br-grid">${BREATH.map(b => `<button class="br-card" data-brpick="${b.id}">${face(b.id)}<b>${esc(b.title)}</b><small>${esc(b.sub)}</small></button>`).join("")}</div>
     <p class="lb-foot">Wird dir schwindelig oder kribbelt es, einfach normal weiteratmen. Die Übungen kommen ohne langes Luftanhalten aus.</p>`;
 }
 function renderBreathIntro(ex){
   const el = document.getElementById("breathView");
   el.innerHTML = `
-    <div class="lb-head"><button class="icon-btn ghost" id="brBack" aria-label="Zurück">‹</button><h2 id="breathTitle">${ex.icon} ${esc(ex.title)}</h2><button class="icon-btn" id="brClose" aria-label="Schließen">✕</button></div>
+    <div class="lb-head"><button class="icon-btn ghost" id="brBack" aria-label="Zurück">‹</button><h2 id="breathTitle">${esc(ex.title)}</h2><button class="icon-btn" id="brClose" aria-label="Schließen">✕</button></div>
+    <div class="br-hero">${face(ex.id)}</div>
     <div class="wk-card"><h3>So geht's</h3><p>${esc(ex.how)}</p><h3>Warum</h3><p>${esc(ex.why)}</p>
       <p class="br-src">Quellen: ${ex.src.map(srcLink).join(" · ")}</p></div>
     <div class="br-opts">
@@ -28,7 +42,7 @@ function renderBreathIntro(ex){
 function renderBreathPlayer(){
   const ex = bs.ex, el = document.getElementById("breathView");
   el.innerHTML = `
-    <div class="lb-head"><button class="icon-btn ghost" id="brBack" aria-label="Zurück">‹</button><h2 id="breathTitle">${ex.icon} ${esc(ex.title)}</h2><button class="icon-btn" id="brClose" aria-label="Schließen">✕</button></div>
+    <div class="lb-head"><button class="icon-btn ghost" id="brBack" aria-label="Zurück">‹</button><h2 id="breathTitle">${esc(ex.title)}</h2><button class="icon-btn" id="brClose" aria-label="Schließen">✕</button></div>
     <div class="br-stage"><div class="br-halo"></div><div class="br-circle" id="brCircle"></div>
       <div class="br-label"><b id="brPhase" aria-live="polite">Bereit</b><span id="brCount"></span></div></div>
     <div class="br-progress"><span id="brBar"></span></div>

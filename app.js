@@ -87,6 +87,8 @@ document.addEventListener("click", e => { const g = e.target.closest("[data-goto
 
 /* ===== Header & Zeitband ===== */
 function renderHero(){
+  document.getElementById("hcLabel").textContent = "Schwangerschaftswoche"; document.getElementById("hcBand").hidden = false;
+  if(state.baby && state.baby.born && window.renderBornHero) return renderBornHero();
   const days = Math.round((ET - today())/864e5);
   const gd = Math.round((today() - LMP)/864e5);
   const w = Math.floor(gd/7), d = gd%7;
@@ -278,7 +280,7 @@ async function write(path, data, merge){
 }
 function note(t){ document.getElementById("syncNote").textContent = t; }
 
-function renderAll(){ renderHero(); renderHome(); renderTasks(); renderTalk(); renderWissen(); renderLog(); renderShop(); if(window.renderSettings) renderSettings(); }
+function renderAll(){ renderHero(); renderHome(); renderTasks(); renderTalk(); renderWissen(); renderLog(); renderShop(); if(window.renderSettings) renderSettings(); if(window.renderBirth) renderBirth(); }
 document.getElementById("addBtn").addEventListener("click", () => state.view === "einkauf" ? document.getElementById("addShop").click() : openSheet(`<h3 id="sheetTitle">Neue Aufgabe</h3>
   <div class="field"><label for="newTitle">Was ist zu tun?</label><input type="text" id="newTitle" placeholder="z. B. Babyschale abholen"></div>
   <div class="field"><label for="newDate">Bis wann?</label><input type="date" id="newDate"></div>

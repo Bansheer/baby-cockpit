@@ -5,7 +5,7 @@
    Änderungen werden sofort lokal angewendet und über eine Warteschlange übertragen,
    damit die App auch offline (Kreißsaal, Funkloch) weiter funktioniert. */
 
-const APP_VERSION = "1.1.0";
+const APP_VERSION = "1.2.0";
 const CFG = window.COCKPIT_CONFIG || {};
 const CONFIGURED = !!(CFG.url && CFG.key && !CFG.url.includes("DEIN-PROJEKT"));
 
@@ -243,7 +243,8 @@ async function startApp(session){
   document.getElementById("login").classList.remove("show");
   db = makeDb();
   const sub = (col, key) => db.collection(col).onSnapshot(s => { state[key] = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); });
-  sub("tasks","tasks"); sub("talk","talk"); sub("questions","questions"); sub("log","log"); sub("shopExtra","shopExtra");
+  sub("tasks","tasks"); sub("talk","talk"); sub("questions","questions"); sub("log","log"); sub("shopExtra","shopExtra"); sub("wehen","wehen");
+  db.doc("state/baby").onSnapshot(s => { state.baby = s.exists ? clean(s.data()) : {}; renderAll(); });
   db.doc("state/shop").onSnapshot(s => { state.shop = s.exists ? clean(s.data()) : {}; renderShop(); renderHome(); });
   db.doc("state/checks").onSnapshot(s => { state.checks = s.exists ? clean(s.data()) : {}; renderWissen(); });
   db.doc("content/wissen").onSnapshot(s => { WISSEN = s.exists ? (s.data().items || []) : []; renderWissen(); });

@@ -7,15 +7,14 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Baby-Cockpit">
-<meta name="theme-color" content="#FBF4F6">
+<meta name="theme-color" content="#F8F0F3">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <title>Baby-Cockpit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>try{var t=localStorage.getItem("bc.theme")||"system";document.documentElement.dataset.theme=(t==="dark"||(t==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))?"dark":"light";}catch(e){document.documentElement.dataset.theme="light";}</script>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
@@ -35,9 +34,7 @@
   <main class="main" id="main">
     <!-- HEUTE -->
     <section data-panel="heute">
-      <header class="greet"><span class="ava" id="greetAva"></span><div class="gr-t"><b id="greetName">Hallo</b><span id="greetDate"></span></div><button class="theme-tg" id="themeTg" aria-label="Dunkles Design"></button></header>
       <div class="hero-card">
-        <img class="hero-fruit" id="heroFruit" alt="" aria-hidden="true">
         <div class="hc-top">
           <div class="hc-left">
             <div class="hc-label" id="hcLabel">Schwangerschaftswoche</div>
@@ -51,13 +48,8 @@
           <div class="band-inner"><svg id="bandSvg" viewBox="0 0 400 74" role="img"></svg></div>
         </div>
       </div>
-      <div class="days" id="dayStrip" role="group" aria-label="Diese Woche"></div>
-      <h2>Dein Tag</h2>
-      <div class="day-grid">
-        <section class="tip-card" id="dailyTip" aria-labelledby="tipTitle"></section>
-        <button class="tile shop-tile" id="shopTile" data-goto="einkauf" aria-label="Erstausstattung öffnen"></button>
-        <div class="birth-bar" id="birthBar"></div>
-      </div>
+      <div class="birth-bar" id="birthBar"></div>
+      <section class="tip-card" id="dailyTip" aria-labelledby="tipTitle"></section>
       <div class="stats" id="kpis"></div>
       <h2>Jetzt dran<span class="count" id="soonCount"></span></h2>
       <div class="list" id="soonList"></div>
@@ -146,7 +138,6 @@
 <script src="birth.js"></script>
 <script src="week.js"></script>
 <script src="breath.js"></script>
-<script src="ui.js"></script>
 <script src="db.js"></script>
 </body>
 </html>

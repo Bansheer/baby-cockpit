@@ -5,7 +5,7 @@
    Änderungen werden sofort lokal angewendet und über eine Warteschlange übertragen,
    damit die App auch offline (Kreißsaal, Funkloch) weiter funktioniert. */
 
-const APP_VERSION = "1.4.1";
+const APP_VERSION = "1.3.0";
 const CFG = window.COCKPIT_CONFIG || {};
 const CONFIGURED = !!(CFG.url && CFG.key && !CFG.url.includes("DEIN-PROJEKT"));
 
@@ -137,7 +137,7 @@ function status(){
 async function setMe(name){
   me = name; LS.set(K.me, name);
   try{ await sb?.auth.updateUser({data:{name}}); }catch(e){}
-  renderSettings(); if(window.renderDailyTip) renderDailyTip(); if(window.renderUI) renderUI();
+  renderSettings(); if(window.renderDailyTip) renderDailyTip();
 }
 function askWho(){
   openSheet(`<h3 id="sheetTitle">Wer bist du?</h3><p>Damit ihr bei jeder Änderung seht, wer sie gemacht hat.</p>
@@ -187,8 +187,6 @@ function renderSettings(){
   el.innerHTML = `
     <h4>Ich bin</h4>
     <div class="seg" role="group" aria-label="Ich bin">${["Lena","Hannes"].map(n => `<button data-me="${n}" aria-pressed="${me===n}">${n}</button>`).join("")}</div>
-    <h4>Design</h4>
-    <div class="seg" role="group" aria-label="Design">${[["light","Hell"],["dark","Dunkel"],["system","Wie iPhone"]].map(([k,n]) => `<button data-theme-set="${k}" aria-pressed="${(window.themePref ? themePref() : "system") === k}">${n}</button>`).join("")}</div>
     <h4>Kalender aufs iPhone</h4>
     ${cal ? `<p>Alle Aufgaben mit Datum erscheinen automatisch in eurem Apple-Kalender und aktualisieren sich von selbst.</p>
       <div class="set-row"><a class="btn" href="webcal://${esc(cal)}">Kalender abonnieren</a><button class="btn sec" id="copyCal">Link kopieren</button></div>`

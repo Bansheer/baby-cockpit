@@ -1,11 +1,10 @@
 /* ===== sw.js – Service Worker: App offline verfügbar + Updates =====
    Bei jeder neuen Version VERSION erhöhen → App zeigt „Neue Version verfügbar“. */
-const VERSION = "1.4.1";
+const VERSION = "1.3.0";
 const CACHE = "baby-cockpit-" + VERSION;
 const SHELL = [
-  "./", "index.html", "styles.css", "content.js", "app.js", "birth.js", "week.js", "breath.js", "ui.js", "fruit3d.js", "db.js", "config.js",
-  "manifest.webmanifest", "icon-180.png", "icon-512.png", "img/ava-lena.png", "img/ava-hannes.png", "img/baby.png",
-  ...[28,29,30,31,32,33,34,35,36,37,38,39,40].map(w => `img/w${w}.png`),
+  "./", "index.html", "styles.css", "content.js", "app.js", "birth.js", "week.js", "breath.js", "fruit3d.js", "db.js", "config.js",
+  "manifest.webmanifest", "icon-180.png", "icon-512.png",
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"
 ];
 

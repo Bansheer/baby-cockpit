@@ -50,11 +50,11 @@ const ADVICE = {
 function renderBirthBar(){
   const el = document.getElementById("birthBar"); if(!el) return;
   if(state.baby.born){
-    el.innerHTML = `<button class="bb-btn" id="bbCard"><span aria-hidden="true">💌</span>Karte</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbEdit"><span aria-hidden="true">✏️</span>Daten</button>`;
+    el.innerHTML = `<button class="bb-btn" id="bbCard"><span aria-hidden="true">💌</span>Geburtskarte teilen</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbEdit"><span aria-hidden="true">✏️</span>Geburtsdaten</button>`;
     return;
   }
   const r = running(), n = contractions().length;
-  el.innerHTML = `<button class="bb-btn ${r?"live":""}" id="bbLabor"><span aria-hidden="true">⏱</span>${r ? "Wehe läuft" : "Wehen"}${n && !r ? `<small>${n}</small>` : ""}</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbBorn"><span aria-hidden="true">👶</span>Baby da</button>`;
+  el.innerHTML = `<button class="bb-btn ${r?"live":""}" id="bbLabor"><span aria-hidden="true">⏱</span>${r ? "Wehe läuft …" : "Wehen-Timer"}${n && !r ? `<small>${n}</small>` : ""}</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbBorn"><span aria-hidden="true">👶</span>Baby ist da</button>`;
 }
 
 /* ---------- Wehen-Timer (Vollbild) ---------- */

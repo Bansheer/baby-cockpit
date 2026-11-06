@@ -1,6 +1,6 @@
 /* ===== sw.js – Service Worker: App offline verfügbar + Updates =====
    Bei jeder neuen Version VERSION erhöhen → App zeigt „Neue Version verfügbar“. */
-const VERSION = "1.4.0";
+const VERSION = "1.4.1";
 const CACHE = "baby-cockpit-" + VERSION;
 const SHELL = [
   "./", "index.html", "styles.css", "content.js", "app.js", "birth.js", "week.js", "breath.js", "ui.js", "fruit3d.js", "db.js", "config.js",

@@ -5,7 +5,7 @@
    Änderungen werden sofort lokal angewendet und über eine Warteschlange übertragen,
    damit die App auch offline (Kreißsaal, Funkloch) weiter funktioniert. */
 
-const APP_VERSION = "1.4.0";
+const APP_VERSION = "1.4.1";
 const CFG = window.COCKPIT_CONFIG || {};
 const CONFIGURED = !!(CFG.url && CFG.key && !CFG.url.includes("DEIN-PROJEKT"));
 

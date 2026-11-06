@@ -252,8 +252,8 @@ export function mountFruit(el, model, opt = {}){
   const fruit = (FRUITS[model] || FRUITS.kohl)();
   // auf einheitliche Größe bringen und zentrieren
   const box = new THREE.Box3().setFromObject(fruit), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
-  const k = 2.3 / Math.max(size.x, size.y, size.z);
-  const holder = new THREE.Group(); fruit.position.sub(c); holder.add(fruit); holder.scale.setScalar(opt.intro ? k * .2 : k); scene.add(holder);
+  const k = 2.8 / Math.max(size.x, size.y, size.z);
+  const holder = new THREE.Group(); fruit.position.sub(c); holder.add(fruit); holder.scale.setScalar(k); scene.add(holder);
   // weicher Kontaktschatten
   const sh = new THREE.Mesh(new THREE.CircleGeometry(1.25, 48), new THREE.MeshBasicMaterial({transparent:true, depthWrite:false,
     map:tex(256, 256, (g, w, h) => { const gr = g.createRadialGradient(w/2, h/2, 0, w/2, h/2, w/2); gr.addColorStop(0, "rgba(90,30,60,.35)"); gr.addColorStop(1, "rgba(90,30,60,0)"); g.fillStyle = gr; g.fillRect(0, 0, w, h); })}));
@@ -273,6 +273,7 @@ export function mountFruit(el, model, opt = {}){
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let raf = 0;
   let introT = opt.intro && !matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1, last = performance.now(), first = true;
+  holder.scale.setScalar(introT < 1 ? k * .2 : k);   // ohne Animation sofort in voller Größe
   const easeBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
   const loop = () => {
     const now = performance.now(), dt = Math.min((now - last) / 1000, .05); last = now;

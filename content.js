@@ -40,7 +40,12 @@ const SRC = {
   sigh: ["Balban et al. 2023 – Brief structured respiration practices (Cell Reports Medicine)", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9873947"],
   sleepbreath: ["Eide et al. – Slow breathing and sleep, systematic review (Sleep Medicine Reviews)", "https://qigonginstitute.org/abstract-print/20405"],
   floorrelax: ["Evolution Physical Therapy – Relaxing your pelvic floor for birth", "https://www.evolutionphysicaltherapy.com/post/pt-for-birth-preparation-pt-1-relaxing-your-pelvic-floor/"],
-  retreat: ["Beyond Human Performance – Retreat-Handout Schwangerschaft (Veronika Broll)", ""]
+  retreat: ["Beyond Human Performance – Retreat-Handout Schwangerschaft (Veronika Broll)", ""],
+  pertussis: ["Kinderärzte Südtirol – Keuchhusten-Impfung für Schwangere", "https://www.pediatri-kinderaerzte.it/deutsch/impfungen/keuchhusten-schwangere/"],
+  pertussisIt: ["ATS Bergamo – Vaccinazioni in gravidanza (Empfehlungen des Ministeriums)", "https://www.ats-bg.it/system/files/pagina_standard/files/3034/10690/ATSBG-Domande%20e%20risposte%20vaccinazioni%20in%20gravidanza.pdf"],
+  rsv: ["Sanitätsbetrieb Südtirol – Synzytial-Virus Vorsorge", "https://www.sabes.it/de/themen/synzytial-virus-vorsorge"],
+  vitd: ["nostrofiglio – Vitamin D und K beim Neugeborenen (SIP/FIMP)", "https://www.nostrofiglio.it/neonato/cura-e-salute/vitamina-d-e-k-nei-neonati"],
+  bzKreiss: ["KH Bozen – Infobroschüre Kreißsaal", "https://home.sabes.it/download/kh/bozen/LIBRETTO_TED_2023.pdf"]
 };
 for(let n = 28; n <= 41; n++) SRC["nhs" + n] = [`NHS – Woche ${n}`, nhsW(n)];
 
@@ -117,7 +122,7 @@ const DAILY = {
        ["Kliniktasche","Fang mit der Kliniktasche an – die Liste steht unter Wissen.",null],
        ["Atmung","Übe ein paar Minuten ruhige, gleichmäßige Atmung. Unter der Geburt hilft sie, mit den Wehen umzugehen.","coping"],
        ["Stillen","Infos zum Stillen sammeln und Fragen für die Hebamme notieren.",null],
-       ["Wohlfühlen","Gönn dir etwas nur für dich.",null]],
+       ["Impfung","Keuchhusten-Impfung (dTpa): in jeder Schwangerschaft empfohlen, 27.–36. SSW, kostenlos. Sie schützt das Baby in den ersten Lebensmonaten.","pertussis"]],
     v:[["Kliniktasche","Pack deine eigene Tasche: Snacks, Wasser, Ladekabel, Powerbank, Wechselshirt, Kleingeld fürs Parken.",null],
        ["Wissen","Lerne die Phasen der Geburt: Eröffnung, Übergang, Austreibung, Nachgeburt.",null],
        ["Entlastung","Bring Lena heute Abend eine Wärmflasche oder massiere ihr den unteren Rücken.",null],
@@ -127,7 +132,7 @@ const DAILY = {
        ["Beziehung","Sag Lena konkret, was du an ihr bewunderst.",null]]},
   32:{
     m:[["Kindsbewegungen","Kenne das Muster deines Babys. Weniger oder anders als sonst: sofort Kreißsaal anrufen – nicht bis morgen warten. Tritte zählen ist nicht nötig.","moves"],
-       ["Termine","Ultraschall III. Trimester gebucht?",null],
+       ["Termine","Ultraschall III. Trimester: in Italien nicht mehr routinemäßig ticketfrei – mit Dr. Malleier klären.",null],
        ["Warnzeichen","Starke Kopfschmerzen, Sehstörungen, Schmerzen unter den Rippen oder plötzliche Schwellungen: sofort ärztlich abklären.","preecl"],
        ["Geburtsplan","Notiere Wünsche: Positionen, Schmerzlinderung, PDA, Haut-zu-Haut.",null],
        ["Beckenboden","Heute 10× kurz anspannen und sofort ganz lösen.","pelvic"],
@@ -168,7 +173,7 @@ const DAILY = {
        ["Entlastung","Heute Abend: Füße massieren, Beine hochlegen helfen.",null],
        ["Organisation","Besuchsregeln mit der Familie besprechen.",null],
        ["Haus","Notfallnummern an den Kühlschrank: Kreißsaal, Kinderärztin, 112.",null],
-       ["Wissen","Lies, wie ein Kaiserschnitt abläuft – gut zu wissen, auch ungeplant.",null],
+       ["Wissen","RSV-Schutz: Babys der Saison 2026/27 bekommen in Südtirol Nirsevimab kostenlos – im Krankenhaus aktiv danach fragen.","rsv"],
        ["Gespräch","Wie stellt ihr euch die erste Woche zu Hause vor?",null]]},
   35:{
     m:[["Kindsbewegungen","Es wird eng, aber die Bewegungen sollten nicht weniger werden. Weniger oder anders: sofort anrufen.","moves"],
@@ -191,7 +196,7 @@ const DAILY = {
        ["Atmung","Wehenatmung üben: zu Beginn einer Wehe ganz ausatmen, dann ruhig und gleichmäßig weiteratmen. Vorher üben hilft.","coping"],
        ["Entspannung","Entspannungstechniken können Schmerzen in der frühen Wehenphase etwas lindern (Evidenz begrenzt).","relax"],
        ["Stillen","Stillplatz zu Hause einrichten: Kissen, Wasserflasche mit Halm, Snacks.",null],
-       ["Termine","Vorgeburtliche Ambulanz: Fragen zu Ablauf, PDA und Rooming-in mitnehmen.",null],
+       ["Vorsorge","GBS-Abstrich (Streptokokken B) ist in der 36.–37. SSW fällig.","bzKreiss"],
        ["Ruhe","Musik, Serie oder Hörbuch für die Wartezeit bereitlegen.",null]],
     v:[["Wehen-Timer","Probelauf: Wehen-Timer gemeinsam testen, danach „Fehlalarm: Liste leeren“.",null],
        ["Geburtsbegleitung","Deine Aufgaben: Ruhe ausstrahlen, Wasser reichen, mitatmen, für Lena sprechen.","coping"],

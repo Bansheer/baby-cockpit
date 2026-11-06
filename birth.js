@@ -50,11 +50,11 @@ const ADVICE = {
 function renderBirthBar(){
   const el = document.getElementById("birthBar"); if(!el) return;
   if(state.baby.born){
-    el.innerHTML = `<button class="bb-btn" id="bbCard"><span aria-hidden="true">💌</span>Geburtskarte teilen</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbEdit"><span aria-hidden="true">✏️</span>Geburtsdaten</button>`;
+    el.innerHTML = `<button class="bb-btn" id="bbCard"><span aria-hidden="true">💌</span>Karte</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbEdit"><span aria-hidden="true">✏️</span>Daten</button>`;
     return;
   }
   const r = running(), n = contractions().length;
-  el.innerHTML = `<button class="bb-btn ${r?"live":""}" id="bbLabor"><span aria-hidden="true">⏱</span>${r ? "Wehe läuft …" : "Wehen-Timer"}${n && !r ? `<small>${n}</small>` : ""}</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbBorn"><span aria-hidden="true">👶</span>Baby ist da</button>`;
+  el.innerHTML = `<button class="bb-btn ${r?"live":""}" id="bbLabor"><span aria-hidden="true">⏱</span>${r ? "Wehe läuft" : "Wehen"}${n && !r ? `<small>${n}</small>` : ""}</button><button class="bb-btn" data-breath=""><span aria-hidden="true">🌬</span>Atmen</button><button class="bb-btn" id="bbBorn"><span aria-hidden="true">👶</span>Baby da</button>`;
 }
 
 /* ---------- Wehen-Timer (Vollbild) ---------- */
@@ -147,15 +147,19 @@ function birthTasks(bornIso){
   const D = new Date(bornIso); D.setHours(12,0,0,0);
   const at = n => { const d = new Date(D); d.setDate(d.getDate()+n); return isoDay(d); };
   return [
-    ["b01", 3,  "Geburt anmelden (Steuernummer kommt automatisch)", "Hannes", "Am einfachsten im Krankenhaus bis Tag 3, sonst in der Gemeinde Eppan bis Tag 10 (" + label(at(10)) + "). Dabei gleich den Windelbonus beantragen.", true],
-    ["b02", 1,  "Hebamme Nathalie: Wochenbettbesuche vereinbaren", "Lena", ""],
+    ["b00", 0,  "Im Krankenhaus ansprechen: RSV-Schutz (Nirsevimab) fürs Baby, Anti-D für Lena", "Beide", "Nirsevimab ist in Südtirol für Babys der Saison 2026/27 kostenlos. Anti-D bekommt Lena innerhalb von 3 Tagen, falls das Baby Rh-positiv ist. Außerdem nach Hüftultraschall, Hör- und Stoffwechselscreening fragen.", true],
+    ["b01", 3,  "Geburt anmelden + Nachname erklären", "Hannes", "Im Krankenhaus bis Tag 3, sonst in der Gemeinde Eppan bis Tag 10 (" + label(at(10)) + "). Standard sind beide Nachnamen – nur Hannes' Nachname geht, wenn beide zustimmen; das wird bei der Geburtsanzeige erklärt. Steuernummer kommt automatisch. Im Meldeamt das Paket „Willkommen Baby“ mitnehmen.", true],
+    ["b02", 1,  "Hebamme Nathalie: Wochenbettbesuche vereinbaren", "Lena", "Nach der Entlassung direkt an die Sprengel-Hebamme wenden."],
     ["b03", 7,  "Kinderärztin wählen (Sprengel, mit Steuernummer)", "Hannes", "Erst nach der Geburtsanmeldung möglich."],
-    ["b04", 7,  "Geburt beim Arbeitgeber melden + 10 Tage Vaterschaft festlegen", "Hannes", "Die 10 Tage sind bis 5 Monate nach der Geburt möglich."],
-    ["b05", 14, "Vitamin-D-Präparat mit der Kinderärztin klären", "Lena", ""],
+    ["b04", 7,  "Geburt beim Arbeitgeber melden + 10 Tage Vaterschaft festlegen", "Hannes", "Die 10 Tage sind bis 5 Monate nach der Geburt möglich, 5 Tage vorher schriftlich ankündigen."],
+    ["b05", 3,  "Vitamin D ab Geburt (400 IE/Tag, 1. Lebensjahr)", "Lena", "Italienische Empfehlung (SIP/FIMP). Präparat laut Entlassungsbrief bzw. Kinderärztin."],
     ["b06", 30, "Geburtsdatum an INPS und Lenas Arbeitgeber melden", "Lena", "Frist 30 Tage, am besten über das Patronat.", true],
-    ["b07", 30, "Assegno unico beantragen (Patronat)", "Beide", "Ohne ISEE = Mindestbetrag. IBAN des Familienkontos angeben."],
+    ["b07", 30, "Assegno unico beantragen (Patronat)", "Beide", "Ohne ISEE = Mindestbetrag. Antrag innerhalb von 120 Tagen (" + label(at(120)) + "), dann Nachzahlung ab dem 7. Schwangerschaftsmonat. IBAN des Familienkontos angeben."],
     ["b08", 30, "Mutual Help: Baby mitversichern, Leistungen klären", "Hannes", ""],
-    ["b09", 60, "Landesfamiliengeld beantragen", "Beide", "Frist: 1 Jahr nach der Geburt."]
+    ["b09", 30, "Landesfamiliengeld beantragen (200 €/Monat bis 3 Jahre)", "Beide", "Frist 1 Jahr, aber früh stellen: Es ist Voraussetzung für das Landesfamiliengeld+ bei Hannes' Elternzeit."],
+    ["b10", 35, "Kinderärztin: Visite 4.–6. Woche + Hüftultraschall", "Beide", "Laut Landesprogramm Visite in der 4.–6. Woche; Hüftultraschall um die 6. Woche."],
+    ["b11", 42, "Impfplan mit der Kinderärztin besprechen", "Beide", "Rotavirus ab 6. Woche (Schluckimpfung); Sechsfach + Pneumokokken an Tag 61, 121, 301; Meningokokken B an Tag 91 und 151."],
+    ["b12", 45, "EuregioFamilyPass beantragen (jeder Elternteil, online)", "Beide", "Über südtirolmobil mit SPID, Steuernummer und Ausweis."]
   ].map(([id, n, title, who, note, critical]) => ({id, data:{title, who, note, sort:at(n), when:"bis " + label(at(n)), status:"Offen", auto:"geburt", ...(critical ? {critical:true} : {})}}));
 }
 document.getElementById("sheet").addEventListener("click", async e => {
